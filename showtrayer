@@ -1,0 +1,6 @@
+#!/bin/sh
+if pidof trayer > /dev/null
+  then killall trayer 
+else 
+  trayer --edge left --transparent on --widthtype request --align center --padding 2 --margin 2 &
+fi

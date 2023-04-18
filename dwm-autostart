@@ -1,0 +1,34 @@
+#!/bin/sh
+picomconf="$HOME/.config/picom/picom.conf"
+
+_thisdir=$(cd $(dirname $0);pwd)
+
+settings() {
+  [ $1 ] && sleep $1
+  xmodmap -e "keycode 135 = Super_R" &
+  xautolock -time 10 -locker slock &
+}
+
+daemons() {
+  [ $1 ] && sleep $1
+  sh $_thisdir/dwmstatusbar > ~/log/dwmstatusbar.log 2>&1 &
+  picom -b --config $picomconf &
+  dunst -b > ~/log/dunst.log 2>&1 &
+  xbanish > ~/log/xbanish.log 2>&1 &
+  fcitx5 -d > ~/log/fcitx5.log 2>&1 &
+  goldendict > ~/log/goldendict.log 2>&1 &
+  redshift -v > ~/log/redshift.log 2>&1 &
+}
+
+cron() {
+  [ $1 ] && sleep $1
+  while true
+  do
+    feh --randomize --bg-fill $wallpapers/*.png > ~/log/wallpapers.log 2>&1 
+    sleep 5m
+  done
+}
+
+settings 2 &
+daemons &
+cron &
