@@ -11,20 +11,22 @@ settings() {
 
 daemons() {
   [ $1 ] && sleep $1
-  sh $_thisdir/dwmstatusbar > ~/log/dwmstatusbar.log 2>&1 &
+  [ -d $HOME/log ] || mkdir $HOME/log
+  dwmstatusbar > $HOME/log/dwmstatusbar.log 2>&1 &
   picom -b --config $picomconf &
-  dunst -b > ~/log/dunst.log 2>&1 &
-  xbanish > ~/log/xbanish.log 2>&1 &
-  fcitx5 -d > ~/log/fcitx5.log 2>&1 &
-  goldendict > ~/log/goldendict.log 2>&1 &
-  redshift -v > ~/log/redshift.log 2>&1 &
+  dunst -b > $HOME/log/dunst.log 2>&1 &
+  xbanish &
+  fcitx5 -d > $HOME/log/fcitx5.log 2>&1 &
+  goldendict &
+  redshift -v > $HOME/log/redshift.log 2>&1 &
+  flameshot &
 }
 
 cron() {
   [ $1 ] && sleep $1
   while true
   do
-    feh --randomize --bg-fill $wallpapers/*.png > ~/log/wallpapers.log 2>&1 
+    feh --randomize --bg-fill $wallpapers/*.png
     sleep 5m
   done
 }

@@ -1,12 +1,15 @@
 #!/bin/sh
 
 printbat(){
-  percent=$(expr $(acpi -b | awk '{print $4}' | grep -Eo "[0-9]+"));
+  percent=$(acpi -b | awk '{print $4}' | grep -Eo "[0-9]+");
   if acpi | grep "Charging" > /dev/null 2>&1
   then
     echo "🔌 $percent%";
   else
-    echo "🪫 $percent%";
+    case $percent in
+      '100') echo "🔋";;
+      *) echo "🪫 $percent%";;
+    esac
   fi
 }
 
@@ -20,8 +23,8 @@ printvolume() {
 }
 
 printdate(){
-  t=$(date '+%H:%M %a %Y.%m.%d');
-  echo "🗓️ $t" 
+  t=$(date '+%H:%M');
+  echo "🕰️ $t" 
 }
 
 printwifi(){
