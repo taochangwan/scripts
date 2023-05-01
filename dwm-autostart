@@ -1,34 +1,63 @@
 #!/bin/sh
-picomconf="$HOME/.config/picom/picom.conf"
-
-_thisdir=$(cd $(dirname $0);pwd)
+_thisdir=$(cd $(dirname $0); pwd)
 
 settings() {
-  [ $1 ] && sleep $1
-  xmodmap -e "keycode 135 = Super_R" &
-  xautolock -time 10 -locker slock &
+    [ $1 ] && sleep $1
+
+    [ -d $HOME/log ] || mkdir $HOME/log
+
+    [ -x "$(which xmodmap)" ] \
+        && xmodmap -e "keycode 135 = Super_R" &
+
+    [ -x "$(which setxkbmap)" ] \
+        && setxkbmap -option "caps:ctrl_modifier" &
+
+    [ -x "$(which xautolock)" -a '$(which slock)' ] \
+        && xautolock -time 10 -locker slock &
 }
 
 daemons() {
-  [ $1 ] && sleep $1
-  [ -d $HOME/log ] || mkdir $HOME/log
-  dwmstatusbar > $HOME/log/dwmstatusbar.log 2>&1 &
-  picom -b --config $picomconf &
-  dunst -b > $HOME/log/dunst.log 2>&1 &
-  xbanish &
-  fcitx5 -d > $HOME/log/fcitx5.log 2>&1 &
-  goldendict &
-  redshift -v > $HOME/log/redshift.log 2>&1 &
-  flameshot &
+    [ $1 ] && sleep $1
+
+    [ -x "$(which picom)" ] \
+        && picom -b &
+
+    [ -x "$(which dunst)" ] \
+        && dunst -b > $HOME/log/dunst.log 2>&1 &
+
+    [ -x "$(which xbanish)" ] \
+        && xbanish &
+
+    [ -x "$(which fcitx5)" ] \
+        && fcitx5 -d > $HOME/log/fcitx5.log 2>&1 &
+
+    [ -x "$(which goldendict)" ] \
+        && goldendict &
+
+    [ -x "$(which redshift)" ] \
+        && redshift -v > $HOME/log/redshift.log 2>&1 &
+
+    [ -x "$(which flameshot)" ] \
+        && flameshot &
+
+    [ -x "$(which nm-applet)" ] && \
+        nm-applet &
 }
 
 cron() {
-  [ $1 ] && sleep $1
-  while true
-  do
-    feh --randomize --bg-fill $wallpapers/*.png
-    sleep 5m
-  done
+    [ $1 ] && sleep $1
+
+    i=0
+    while true
+    do
+        [ -x "$(which feh)" ] && [ $((i % 300)) -eq 0 ] \
+            && feh --randomize --bg-fill $wallpapers/*.png
+
+        [ -x "$(which dwm-statusbar)" ] && [ $((i % 2)) -eq 0 ] \
+            && dwm-statusbar > $HOME/log/dwmstatusbar.log 2>&1
+
+        sleep 2; i=$((i + 2))
+    done
 }
 
 settings 2 &
