@@ -10,7 +10,7 @@ printbat(){
   then
     echo "🔌 $percent%"
   else
-    if [ $percent -gt 80 ]
+    if [ $percent -gt 20 ]
     then
       echo "🔋 $percent%"
     else

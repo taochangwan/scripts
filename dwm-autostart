@@ -4,16 +4,14 @@ _thisdir=$(cd $(dirname $0); pwd)
 settings() {
     [ $1 ] && sleep $1
 
-    [ -d $HOME/log ] || mkdir $HOME/log
-
     [ -x "$(which xmodmap)" ] \
         && xmodmap -e "keycode 135 = Super_R" &
 
     [ -x "$(which setxkbmap)" ] \
         && setxkbmap -option "caps:ctrl_modifier" &
 
-    [ -x "$(which xautolock)" -a '$(which slock)' ] \
-        && xautolock -time 10 -locker slock &
+    # [ -x "$(which xautolock)" -a '$(which slock)' ] \
+    #     && xautolock -time 10 -locker slock &
 }
 
 daemons() {
@@ -23,22 +21,22 @@ daemons() {
         && picom -b &
 
     [ -x "$(which dunst)" ] \
-        && dunst -b > $HOME/log/dunst.log 2>&1 &
+        && dunst &
 
     [ -x "$(which xbanish)" ] \
         && xbanish &
 
     [ -x "$(which fcitx5)" ] \
-        && fcitx5 -d > $HOME/log/fcitx5.log 2>&1 &
+        && fcitx5 -d 2> /dev/null &
 
     [ -x "$(which goldendict)" ] \
-        && goldendict &
+        && goldendict 2> /dev/null &
 
     [ -x "$(which redshift)" ] \
-        && redshift -v > $HOME/log/redshift.log 2>&1 &
+        && redshift 2> /dev/null &
 
     [ -x "$(which flameshot)" ] \
-        && flameshot &
+        && flameshot 2> /dev/null &
 
     [ -x "$(which nm-applet)" ] && \
         nm-applet &
@@ -54,7 +52,7 @@ cron() {
             && feh --randomize --bg-fill $wallpapers/*.png
 
         [ -x "$(which dwm-statusbar)" ] && [ $((i % 2)) -eq 0 ] \
-            && dwm-statusbar > $HOME/log/dwmstatusbar.log 2>&1
+            && dwm-statusbar
 
         sleep 2; i=$((i + 2))
     done
