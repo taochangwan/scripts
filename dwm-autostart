@@ -23,9 +23,8 @@ daemons() {
     [ -x "$(which fcitx5 2> /dev/null)" ]\
         && fcitx5 -d 2> /dev/null &
 
-    # [ -x "$(which goldendict 2> /dev/null)" ]\
-       #  && 
-    goldendict 2> /dev/null &
+    [ -x "$(which goldendict 2> /dev/null)" ]\
+        && goldendict 2> /dev/null &
 
     [ -x "$(which redshift 2> /dev/null)" ]\
         && redshift 2> /dev/null &
@@ -35,6 +34,9 @@ daemons() {
 
     [ -x "$(which nm-applet 2> /dev/null)" ]\
         && nm-applet &
+
+    [ -x "$(which mpd 2>/dev/null)" ]\
+        && mpd &
 }
 
 cron() {
