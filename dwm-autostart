@@ -4,42 +4,37 @@ _thisdir=$(cd $(dirname $0); pwd)
 settings() {
     [ $1 ] && sleep $1
 
-    [ -x "$(which xmodmap)" ] \
-        && xmodmap -e "keycode 135 = Super_R" &
-
     [ -x "$(which setxkbmap)" ] \
-        && setxkbmap -option "caps:ctrl_modifier" &
-
-    # [ -x "$(which xautolock)" -a '$(which slock)' ] \
-    #     && xautolock -time 10 -locker slock &
+        && setxkbmap -option "caps:escape" &
 }
 
 daemons() {
     [ $1 ] && sleep $1
 
-    [ -x "$(which picom)" ] \
+    [ -x "$(which picom 2> /dev/null)" ]\
         && picom -b &
 
-    [ -x "$(which dunst)" ] \
+    [ -x "$(which dunst 2> /dev/null)" ]\
         && dunst &
 
-    [ -x "$(which xbanish)" ] \
+    [ -x "$(which xbanish 2> /dev/null)" ]\
         && xbanish &
 
-    [ -x "$(which fcitx5)" ] \
+    [ -x "$(which fcitx5 2> /dev/null)" ]\
         && fcitx5 -d 2> /dev/null &
 
-    [ -x "$(which goldendict)" ] \
-        && goldendict 2> /dev/null &
+    # [ -x "$(which goldendict 2> /dev/null)" ]\
+       #  && 
+    goldendict 2> /dev/null &
 
-    [ -x "$(which redshift)" ] \
+    [ -x "$(which redshift 2> /dev/null)" ]\
         && redshift 2> /dev/null &
 
-    [ -x "$(which flameshot)" ] \
+    [ -x "$(which flameshot 2> /dev/null)" ]\
         && flameshot 2> /dev/null &
 
-    [ -x "$(which nm-applet)" ] && \
-        nm-applet &
+    [ -x "$(which nm-applet 2> /dev/null)" ]\
+        && nm-applet &
 }
 
 cron() {
@@ -48,16 +43,24 @@ cron() {
     i=0
     while true
     do
-        [ -x "$(which feh)" ] && [ $((i % 300)) -eq 0 ] \
+        [ -x "$(which feh 2> /dev/null)" ] && [ $((i % 300)) -eq 0 ]\
             && feh --randomize --bg-fill $wallpapers/*.png
 
-        [ -x "$(which dwm-statusbar)" ] && [ $((i % 2)) -eq 0 ] \
+        [ -x "$(which dwm-statusbar 2> /dev/null)" ] && [ $((i % 2)) -eq 0 ]\
             && dwm-statusbar
 
         sleep 2; i=$((i + 2))
     done
 }
 
-settings 2 &
+starup() {
+    [ $1 ] && sleep $1
+
+    [ -x "$(which st 2> /dev/null)" ]\
+        && st &
+}
+
 daemons &
 cron &
+starup &
+settings &
