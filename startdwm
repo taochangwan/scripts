@@ -1,3 +1,0 @@
-#!/bin/sh
-
-dwm > ~/log/dwm.log 2>&1
