@@ -1,58 +1,57 @@
 #!/bin/sh
 
 printbat(){
-  percent=$(\
-      expr $(acpi -b | grep -Eo "[0-9]+%"\
-      | cut --delimiter="%" --fields=1) + 0\
-      )
+    percent=$(\
+        expr $(acpi -b | grep -Eo "[0-9]+%"\
+        | cut --delimiter="%" --fields=1) + 0\
+    )
 
-  if acpi | grep "Charging" > /dev/null 2>&1
-  then
-    echo "🔌 $percent%"
-  else
-    if [ $percent -gt 20 ]
+    if acpi | grep "Charging" > /dev/null 2>&1
     then
-      echo "🔋 $percent%"
+        printf "🔌%3s%%" $percent
     else
-      echo "🪫 $percent%"
+        if [ $percent -gt 20 ]
+        then
+            printf "🔋%3s%%" $percent
+        else
+            printf "🪫%3s%%" $percent
+        fi
     fi
-  fi
 }
 
 printvolume() {
-  vstate=$(\
-      amixer get Master\
-      | tail -n1\
-      | cut --delimiter=" " --fields=8\
-      )
+    vstate=$(\
+        amixer get Master\
+        | tail -n1\
+        | cut --delimiter=" " --fields=8\
+    )
 
-  percentage=$(\
-      amixer get Master\
-      | tail -n1\
-      | cut --delimiter=" " --fields=7\
-      | grep -oe "[0-9]*"\
-      )
+    percentage=$(\
+        amixer get Master\
+        | tail -n1\
+        | grep -oE "[0-9]*%"\
+    )
 
-  case $vstate in
-    "[on]") echo "🔔 $percentage%";;
-    "[off]") echo "🔕";;
-  esac
+    case $vstate in
+        "[on]") printf "🔔%3s" $percentage;;
+        "[off]") echo "🔕";;
+    esac
 }
 
 printdate(){
-  t=$(date '+%H:%M')
+    t=$(date '+%H:%M')
 
-  echo "⏰ $t"
+    echo "⏰$t"
 }
 
 printwifi(){
-  ssid=$(\
-      iw dev wlp8s0 link\
-      | grep -Eo "SSID: (.*)"\
-      | sed "s/SSID: //"\
-      )
+    ssid=$(\
+        iw dev wlp8s0 link\
+        | grep -Eo "SSID: (.*)"\
+        | sed "s/SSID: //"\
+    )
 
-  [ -z $ssid ] && echo "🚫" || echo "🛜 $ssid"
+    [ -z $ssid ] && echo "🚫" || echo "🛜$ssid"
 }
 
 xsetroot -name "|$(printdate)| |$(printwifi)| |$(printbat)| |$(printvolume)|"
