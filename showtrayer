@@ -1,8 +1,8 @@
 #!/bin/sh
-if pidof trayer > /dev/null
-then killall trayer 
+if pidof trayer-srg > /dev/null
+then killall trayer-srg
 else 
-    trayer\
+    trayer-srg\
         --edge left\
         --transparent on\
         --widthtype request\
